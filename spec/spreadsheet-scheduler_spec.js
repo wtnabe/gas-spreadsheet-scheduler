@@ -38,8 +38,9 @@ describe('SpreadsheetScheduler', () => {
 
   before(() => {
     range = new FakeRange('A1:C', values)
-    scheduler = app.createSpreadsheetScheduler()
-    sinon.stub(scheduler, 'today').returns(today())
+    const dateUtils = app.createDateUtils()
+    sinon.stub(dateUtils, 'today').returns(today())
+    scheduler = app.createSpreadsheetScheduler(dateUtils)
   })
 
   describe('#executeWhenMet', () => {

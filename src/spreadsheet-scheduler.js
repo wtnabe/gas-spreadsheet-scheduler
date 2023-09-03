@@ -1,3 +1,5 @@
+/* global createDateUtils */
+
 /**
  * @typedef SpreadsheetRange
  * @type {object}
@@ -9,6 +11,13 @@ class SpreadsheetScheduler {
   /** @var {const} */
   get DEFAULT_DATE_COL () {
     return 0
+  }
+
+  /**
+   * @param {DateUtils} dateutils
+   */
+  constructor (dateUtils = createDateUtils()) {
+    this.dateUtils = dateUtils
   }
 
   /**
@@ -179,7 +188,7 @@ class SpreadsheetScheduler {
    * @returns {Function}
    */
   isAppointedDay () {
-    const today = this.today()
+    const today = this.dateUtils.today()
     /**
      * @param {Date} date
      * @returns {boolean}
@@ -191,57 +200,6 @@ class SpreadsheetScheduler {
         else return true
       })()
     }
-  }
-
-  /**
-   * return Date without time
-   *
-   * @returns {Date}
-   */
-  today () {
-    const d = new Date()
-    const today = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0)
-
-    return today
-  }
-
-  /**
-   * @returns {Array<Date>}
-   */
-  lastWeek () { // eslint-disable-line no-unused-vars
-    const [from, to] = this.thisWeek()
-
-    from.setDate(from.getDate() - 7)
-    to.setDate(to.getDate() - 7)
-
-    return [from, to]
-  }
-
-  /**
-   * from Sunday to Saturday ( next Sunday 00:00:00 )
-   *
-   * @returns {Array<Date>}
-   */
-  thisWeek () {
-    const day = this.today()
-    const dow = day.getDay()
-
-    const from = new Date(this.today().setDate(day.getDate() - dow))
-    const to = new Date(this.today().setDate(day.getDate() + (7 - dow)))
-
-    return [from, to]
-  }
-
-  /**
-   * @returns {Array<Date>}
-   */
-  nextWeek () { // eslint-disable-line no-unused-vars
-    const [from, to] = this.thisWeek()
-
-    from.setDate(from.getDate() + 7)
-    to.setDate(to.getDate() + 7)
-
-    return [from, to]
   }
 
   /**
@@ -276,8 +234,12 @@ class SpreadsheetScheduler {
   }
 }
 
-function createSpreadsheetScheduler () { // eslint-disable-line no-unused-vars
-  return new SpreadsheetScheduler()
+/**
+ * @param {DateUtils} dateutils
+ * @returns {SpreadsheetScheduler}
+ */
+function createSpreadsheetScheduler (dateUtils = createDateUtils()) { // eslint-disable-line no-unused-vars
+  return new SpreadsheetScheduler(dateUtils)
 }
 
 /**
