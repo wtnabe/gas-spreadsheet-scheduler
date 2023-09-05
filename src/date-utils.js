@@ -15,6 +15,8 @@ class DateUtils {
   }
 
   /**
+   * from Sunday to Saturday surrounding the given day
+   *
    * @param {Date} date
    * @returns {Array<Date>}
    */
@@ -24,12 +26,14 @@ class DateUtils {
     const from = new Date(date.getTime())
     from.setDate(date.getDate() - dow)
     const to = new Date(date.getTime())
-    to.setDate(date.getDate() + (7 - dow))
+    to.setDate(date.getDate() + (6 - dow))
 
     return [from, to]
   }
 
   /**
+   * 7 days before thisWeek()
+   *
    * @returns {Array<Date>}
    */
   lastWeek () { // eslint-disable-line no-unused-vars
@@ -42,7 +46,7 @@ class DateUtils {
   }
 
   /**
-   * from Sunday to Saturday ( next Sunday 00:00:00 )
+   * from Sunday to Saturday surrounding today
    *
    * @returns {Array<Date>}
    */
@@ -51,6 +55,8 @@ class DateUtils {
   }
 
   /**
+   * 7 days later thisWeek()
+   *
    * @returns {Array<Date>}
    */
   nextWeek () { // eslint-disable-line no-unused-vars
@@ -63,7 +69,7 @@ class DateUtils {
   }
 
   /**
-   * from 1st day of month to next 1st day of month includes date
+   * from 1st day of month to last day of month surrounding given day
    *
    * @param {Date} date
    * @returns {Array<Date>}
@@ -73,7 +79,7 @@ class DateUtils {
     from.setDate(1)
     const to = new Date(date.getTime())
     to.setMonth(to.getMonth() + 1)
-    to.setDate(1)
+    to.setDate(0)
 
     return [from, to]
   }
@@ -91,7 +97,7 @@ class DateUtils {
   }
 
   /**
-   * from 1st day of month to next 1st day of month
+   * from 1st day of month to last day of month
    *
    * @returns {Array<Date>}
    */
@@ -114,17 +120,14 @@ class DateUtils {
   }
 
   /**
-   * from 1st day of month to next 1st day of month
-   *
-   * @returns {Array<Date>}
-   */
-  /**
    * @param {Date} date
    * @param {Date} from
    * @param {Date} to
    * @returns {boolean}
    */
-  inDuration (date, from, to) {
+  withinDatePeriod (date, from, to) {
+    to.setDate(to.getDate() + 1)
+
     return from <= date && date < to
   }
 
@@ -145,7 +148,7 @@ class DateUtils {
   inThisWeek (date) {
     const [from, to] = this.thisWeek()
 
-    return this.inDuration(date, from, to)
+    return this.withinDatePeriod(date, from, to)
   }
 
   /**
@@ -155,7 +158,7 @@ class DateUtils {
   inNextWeek (date) {
     const [from, to] = this.nextWeek()
 
-    return this.inDuration(date, from, to)
+    return this.withinDatePeriod(date, from, to)
   }
 
   /**
@@ -165,7 +168,7 @@ class DateUtils {
   inLastMonth (date) {
     const [from, to] = this.lastMonth()
 
-    return this.inDuration(date, from, to)
+    return this.withinDatePeriod(date, from, to)
   }
 
   /**
@@ -175,7 +178,7 @@ class DateUtils {
   inThisMonth (date) {
     const [from, to] = this.thisMonth()
 
-    return this.inDuration(date, from, to)
+    return this.withinDatePeriod(date, from, to)
   }
 
   /**
@@ -185,7 +188,7 @@ class DateUtils {
   inNextMonth (date) {
     const [from, to] = this.nextMonth()
 
-    return this.inDuration(date, from, to)
+    return this.withinDatePeriod(date, from, to)
   }
 }
 

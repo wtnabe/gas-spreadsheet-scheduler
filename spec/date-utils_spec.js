@@ -31,7 +31,7 @@ describe('DateUtils', () => {
       it('2023-05-05 is the week of 2023-04-30 to 2023-05-06', () => {
         assert.deepEqual(
           dateUtils.thatWeek(date('2023-05-05')),
-          [ date('2023-04-30'), date('2023-05-07') ]
+          [ date('2023-04-30'), date('2023-05-06') ]
         )
       })
     })
@@ -40,7 +40,7 @@ describe('DateUtils', () => {
       it('return last of last Sunday and last Sunday', () => {
         assert.deepEqual(
           dateUtils.lastWeek(),
-          [ date('2023-05-14'), date('2023-05-21') ]
+          [ date('2023-05-14'), date('2023-05-20') ]
         )
       })
     })
@@ -49,7 +49,7 @@ describe('DateUtils', () => {
       it('return sunday ( getDay() is 0 ) and next sunday', () => {
         assert.deepEqual(
           dateUtils.thisWeek(),
-          [date('2023-05-21'), date('2023-05-28')]
+          [date('2023-05-21'), date('2023-05-27')]
         )
       })
     })
@@ -58,7 +58,7 @@ describe('DateUtils', () => {
       it('return next sunday and next of next sunday ( even across months )', () => {
         assert.deepEqual(
           dateUtils.nextWeek(),
-          [ date('2023-05-28'), date('2023-06-04') ]
+          [ date('2023-05-28'), date('2023-06-03') ]
         )
       })
     })
@@ -69,7 +69,7 @@ describe('DateUtils', () => {
       it('', () => {
         assert.deepEqual(
           dateUtils.thatMonth(date('2023-06-11')),
-          [ date('2023-06-01'), date('2023-07-01') ]
+          [ date('2023-06-01'), date('2023-06-30') ]
         )
       })
     })
@@ -81,7 +81,7 @@ describe('DateUtils', () => {
       it('return from 1st day of last month ( even across years )', () => {
         assert.deepEqual(
           dateUtils.lastMonth(),
-          [ date('2022-12-01'), date('2023-01-01') ]
+          [ date('2022-12-01'), date('2022-12-31') ]
         )
       })
     })
@@ -93,7 +93,7 @@ describe('DateUtils', () => {
       it('return from 1st day to next 1st day', () => {
         assert.deepEqual(
           dateUtils.thisMonth(),
-          [date('2023-05-01'), date('2023-06-01')]
+          [date('2023-05-01'), date('2023-05-31')]
         )
       })
     })
@@ -105,13 +105,18 @@ describe('DateUtils', () => {
       it('from next 1st day to next after next 1st day ( even across years )', () => {
         assert.deepEqual(
           dateUtils.nextMonth(),
-          [ date('2024-01-01'), date('2024-02-01') ]
+          [ date('2024-01-01'), date('2024-01-31') ]
         )
       })
     })
   })
 
-  describe('#inDuration', () => {
+  describe('#withinDatePeriod', () => {
+    beforeEach(() => {
+      dateUtils = app.createDateUtils()
+      sinon.stub(dateUtils, 'today').returns(today())
+    })
+
     describe('#inThisWeek', () => {
       it('2023-05-27 is in this week', () => {
         assert(dateUtils.inThisWeek(dateUtils.today()))
