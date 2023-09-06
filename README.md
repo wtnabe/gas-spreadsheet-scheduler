@@ -32,27 +32,56 @@ I would recommend #2 for speed of execution, but #1 is also a good option for ad
 #### 2-2. Prepare code like below
 
 ```javascript
-function WarnIfSchedulesRemain() {
+/** review past and future plans */
+function reviewPlans() {
   const scheduler = SpreadsheetScheduler.createSpreadsheetScheduler()
-  const [from, to] = scheduler.lastWeek()
+  const dateUtils = SpreadsheetScheduler.createDateUtils()
+  const today = dateUtils.today()
+  const range = SpreadsheetApp.getActiveSpreadsheet().getRange('Sheet1!A1:C')
+
+  const [since, until] = dateUtils.thisWeek()
 
   scheduler.executeWhenMet({
-    range: SpreadsheetApp.getActiveSpreadsheet().getRange('Sheet1!A1:B'),
-    skipCol: 2,
-    selector: (date) => date >= from && date < to,
+    range,
+    selector: (date) => date < since,
     executor: tooooLate,
-    batch: true
+    skipCol: 2, batch: true
+  })
+
+  scheduler.executeWhenMet({
+    range,
+    selector: (date) => dateUtils.inThisWeek(date) && today <= date,
+    executor: hereWeGo,
+    skipCol: 2, batch: true
   })
 }
 
-function tooooLate (values, dateCol, skipCol) {
+/**
+ * @param {object} row
+ * @param {number} dateCol
+ * @param {number} skipCol
+ * @returns {string}
+ */
+function buildRow(row, dateCol, skipCol) {
   const scheduler = SpreadsheetScheduler.createSpreadsheetScheduler()
-  console.log(values.map((row) => {
-    return [
-      row[dateCol].toLocaleDateString('ja-JP'),
-      ...scheduler.restOfRow(row, dateCol, skipCol)
-    ].join('\t')
-  }).join('\n'))
+
+  return [row[dateCol].toLocaleDateString(), ...scheduler.restOfRow(row)].join('\t')
+}
+
+/** display future ( today or later ) plans */
+function hereWeGo (values, dateCol, skipCol) {
+  if (values.length > 0) {
+    console.log('This week\'s remaining plan listed as below:')
+    console.log(values.map((row) => buildRow(row, dateCol, skipCol)).join('\n'))
+  }
+}
+
+/** warn incompleted tasks */
+function tooooLate (values, dateCol, skipCol) {
+  if (values.length > 0) {
+    console.log('Too Late ! Hurry up !')
+    console.log(values.map((row) => buildRow(row, dateCol, skipCol)).join('\n'))
+  }
 }
 ```
 
