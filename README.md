@@ -87,10 +87,14 @@ function tooooLate (values, dateCol, skipCol) {
 
 #### Result
 
-It's Sunday or later.
+If you run on Monday,
 
 ```
-2023/5/26	一昨日です
+Too Late ! Hurry up !
+5/26/2023	一昨日です
+This week's remaining plan listed as below:
+6/1/2023	4日後です
+5/28/2023	当日です
 ```
 
 If there are still rows in Spreadsheet containing dates that correspond to `lastWeek()`, they will be output.
